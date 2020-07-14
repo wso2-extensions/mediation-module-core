@@ -76,7 +76,6 @@ public final class SimpleMessageContext {
     private final Gson gson;
 
     SimpleMessageContext(MessageContext messageContext) {
-
         this.messageContext = messageContext;
         gson = new Gson();
         jsonParser = new JsonParser();
@@ -89,7 +88,6 @@ public final class SimpleMessageContext {
      * @return payload string
      */
     public String getJsonString() {
-
         return JsonUtil.jsonPayloadToString(((Axis2MessageContext) messageContext).getAxis2MessageContext());
     }
 
@@ -100,7 +98,6 @@ public final class SimpleMessageContext {
      * @return payload body as JsonElement
      */
     public JsonElement getJsonElement() {
-
         String jsonPayloadString = getJsonString();
         JsonElement jsonElement;
         try {
@@ -120,7 +117,6 @@ public final class SimpleMessageContext {
      * @return matching Json content as JsonElement
      */
     public JsonElement getJsonElement(String jsonPath) {
-
         try {
             SynapseJsonPath synapseJsonPath = new SynapseJsonPath(jsonPath);
             Object evaluationResult = synapseJsonPath.evaluate(messageContext);
@@ -138,7 +134,6 @@ public final class SimpleMessageContext {
      * @return payload as JsonArray
      */
     public JsonArray getJsonArray() {
-
         JsonElement jsonElement = getJsonElement();
         if (jsonElement.isJsonArray()) {
             return jsonElement.getAsJsonArray();
@@ -156,7 +151,6 @@ public final class SimpleMessageContext {
      * @return Result as a JsonArray
      */
     public JsonArray getJsonArray(String jsonPath) {
-
         JsonElement jsonPathResult = getJsonElement(jsonPath);
 
         JsonArray jsonArrayToStream;
@@ -176,7 +170,6 @@ public final class SimpleMessageContext {
      * @return payload as a JsonObject
      */
     public JsonObject getJsonObject() {
-
         JsonElement jsonElement = getJsonElement();
         if (jsonElement.isJsonObject()) {
             return jsonElement.getAsJsonObject();
@@ -194,7 +187,6 @@ public final class SimpleMessageContext {
      * @return result JsonObject
      */
     public JsonObject getJsonObject(String jsonPath) {
-
         JsonElement jsonPathResult = getJsonElement(jsonPath);
 
         JsonObject jsonObject;
@@ -214,7 +206,6 @@ public final class SimpleMessageContext {
      * @return Stream of JsonElement
      */
     public Stream<JsonElement> getJsonArrayStream() {
-
         JsonArray jsonArray = getJsonArray();
         return getJsonArrayStream(jsonArray);
     }
@@ -226,7 +217,6 @@ public final class SimpleMessageContext {
      * @return Stream of JsonElement
      */
     public Stream<JsonElement> getJsonArrayStream(JsonArray jsonArray) {
-
         return StreamSupport.stream(jsonArray.spliterator(), false);
     }
 
@@ -238,9 +228,7 @@ public final class SimpleMessageContext {
      * @return JsonElement Stream
      */
     public Stream<JsonElement> getJsonArrayStream(String jsonPath) {
-
         JsonArray jsonArrayToStream = getJsonArray(jsonPath);
-
         return getJsonArrayStream(jsonArrayToStream);
     }
 
@@ -251,7 +239,6 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedJsonElement
      */
     public Stream<IndexedElement<JsonElement>> getJsonArrayStreamWithIndex() {
-
         JsonArray jsonArray = getJsonArray();
         return getJsonArrayStreamWithIndex(jsonArray);
     }
@@ -263,7 +250,6 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedJsonElement
      */
     public Stream<IndexedElement<JsonElement>> getJsonArrayStreamWithIndex(JsonArray jsonArray) {
-
         return IntStream.range(0, jsonArray.size())
                 .mapToObj(i -> new IndexedElement<>(i, jsonArray.get(i)));
     }
@@ -277,9 +263,7 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedElement of JsonElement
      */
     public Stream<IndexedElement<JsonElement>> getJsonArrayStreamWithIndex(String jsonPath) {
-
         JsonArray jsonArrayToStream = getJsonArray(jsonPath);
-
         return getJsonArrayStreamWithIndex(jsonArrayToStream);
     }
 
@@ -291,7 +275,6 @@ public final class SimpleMessageContext {
      * and attribute value as value
      */
     public Stream<Map.Entry<String, JsonElement>> getJsonObjectStream() {
-
         JsonObject jsonObject = getJsonObject();
         return getJsonObjectStream(jsonObject);
     }
@@ -304,7 +287,6 @@ public final class SimpleMessageContext {
      * and attribute value as value
      */
     public Stream<Map.Entry<String, JsonElement>> getJsonObjectStream(JsonObject jsonObject) {
-
         return jsonObject.entrySet().stream();
     }
 
@@ -317,7 +299,6 @@ public final class SimpleMessageContext {
      * @return Object stream
      */
     public Stream<Map.Entry<String, JsonElement>> getJsonObjectStream(String jsonPath) {
-
         JsonObject jsonObjectToStream = getJsonObject(jsonPath);
         return getJsonObjectStream(jsonObjectToStream);
     }
@@ -329,7 +310,6 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedEntry
      */
     public Stream<IndexedEntry> getJsonObjectStreamWithIndex() {
-
         JsonObject jsonObject = getJsonObject();
         return getJsonObjectStreamWithIndex(jsonObject);
     }
@@ -342,7 +322,6 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedEntry
      */
     public Stream<IndexedEntry> getJsonObjectStreamWithIndex(JsonObject jsonObject) {
-
         final Iterator<Map.Entry<String, JsonElement>> iterator = jsonObject.entrySet().iterator();
         return IntStream.range(0, jsonObject.entrySet().size())
                 .mapToObj(i -> new IndexedEntry(i, iterator.next()));
@@ -357,7 +336,6 @@ public final class SimpleMessageContext {
      * @return Indexed Object stream
      */
     public Stream<IndexedEntry> getJsonObjectStreamWithIndex(String jsonPath) {
-
         JsonObject jsonObjectToStream = getJsonObject(jsonPath);
         return getJsonObjectStreamWithIndex(jsonObjectToStream);
     }
@@ -369,7 +347,6 @@ public final class SimpleMessageContext {
      * @param jsonPayload JsonElement to set as the current payload
      */
     public void setJsonPayload(JsonElement jsonPayload) {
-
         String transformedJson = jsonPayload.toString();
         setJsonPayload(transformedJson);
     }
@@ -381,7 +358,6 @@ public final class SimpleMessageContext {
      * @param payload String to set as the current payload
      */
     public void setJsonPayload(String payload) {
-
         setPayloadType("application/json");
 
         try {
@@ -398,7 +374,6 @@ public final class SimpleMessageContext {
      * @return root xml element as OMElement
      */
     public OMElement getRootXmlElement() {
-
         return messageContext.getEnvelope().getBody().getFirstElement();
     }
 
@@ -408,7 +383,6 @@ public final class SimpleMessageContext {
      * @param element OMElement to replace root element
      */
     public void replaceRootXmlElement(OMElement element) {
-
         messageContext.getEnvelope().getBody().getFirstElement().detach();
         messageContext.getEnvelope().getBody().addChild(element);
         setPayloadType("application/xml");
@@ -423,7 +397,6 @@ public final class SimpleMessageContext {
      * @return List of OMElement matching the X path
      */
     public List<OMElement> getXmlElements(String xPath, XmlNamespace... namespaces) {
-
         return getXmlElements(getRootXmlElement(), xPath, namespaces);
     }
 
@@ -437,7 +410,6 @@ public final class SimpleMessageContext {
      * @return List of OMElement matching the X path
      */
     public List<OMElement> getXmlElements(OMElement baseElement, String xPath, XmlNamespace... namespaces) {
-
         try {
             AXIOMXPath axiomxPath = new AXIOMXPath(xPath);
             if (namespaces != null) {
@@ -462,7 +434,6 @@ public final class SimpleMessageContext {
      * @return Stream of OMElement
      */
     public Stream<OMElement> getXmlElementsStream(String xPath, XmlNamespace... namespaces) {
-
         return getXmlElements(xPath, namespaces).stream();
     }
 
@@ -476,7 +447,6 @@ public final class SimpleMessageContext {
      * @return Stream of OMElement
      */
     public Stream<OMElement> getXmlElementsStream(OMElement baseElement, String xPath, XmlNamespace... namespaces) {
-
         return getXmlElements(baseElement, xPath, namespaces).stream();
     }
 
@@ -486,7 +456,6 @@ public final class SimpleMessageContext {
      * @return Stream of OMElement of the child elements of the root xml element
      */
     public Stream<OMElement> getXmlChildElementsStream() {
-
         OMElement rootElement = messageContext.getEnvelope().getBody().getFirstElement();
         return getXmlChildElementsStream(rootElement);
     }
@@ -498,7 +467,6 @@ public final class SimpleMessageContext {
      * @return Stream of OMElement
      */
     public Stream<OMElement> getXmlChildElementsStream(OMElement xmlElement) {
-
         Iterable<OMElement> iterable = xmlElement::getChildElements;
         return StreamSupport.stream(iterable.spliterator(), false);
     }
@@ -510,7 +478,6 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedElement of OMElement
      */
     public Stream<IndexedElement<OMElement>> getXmlChildElementsStreamWithIndex() {
-
         OMElement rootElement = messageContext.getEnvelope().getBody().getFirstElement();
         return getXmlChildElementsStreamWithIndex(rootElement);
     }
@@ -522,7 +489,6 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedElement of OMElement
      */
     public Stream<IndexedElement<OMElement>> getXmlChildElementsStreamWithIndex(OMElement xmlElement) {
-
         int size = Iterators.size(xmlElement.getChildElements());
         final Iterator<OMElement> iterator = xmlElement.getChildElements();
         return IntStream.range(0, size)
@@ -537,7 +503,6 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedElement of OMElement
      */
     public Stream<IndexedElement<OMElement>> getXmlElementsStreamWithIndex(String xPath, XmlNamespace... namespaces) {
-
         List<OMElement> xmlElements = getXmlElements(xPath, namespaces);
         if (!xmlElements.isEmpty()) {
             return IntStream.range(0, xmlElements.size())
@@ -557,7 +522,6 @@ public final class SimpleMessageContext {
      */
     public Stream<IndexedElement<OMElement>> getXmlElementsStreamWithIndex(OMElement baseElement, String xPath,
                                                                            XmlNamespace... namespaces) {
-
         List<OMElement> elementList = getXmlElements(baseElement, xPath, namespaces);
         return IntStream.range(0, elementList.size())
                 .mapToObj(i -> new IndexedElement<>(i, elementList.get(i)));
@@ -572,7 +536,6 @@ public final class SimpleMessageContext {
      * @return Stream of OMElement
      */
     public Stream<OMElement> getCDataContentXmlStream(String xPath, XmlNamespace... namespaces) {
-
         String cDataContent = getCDataContent(xPath, namespaces);
 
         if (cDataContent == null) {
@@ -593,7 +556,6 @@ public final class SimpleMessageContext {
      * @return Stream of JsonElement
      */
     public Stream<JsonElement> getCDataContentJsonArrayStream(String xPath, XmlNamespace... namespaces) {
-
         String cDataContent = getCDataContent(xPath, namespaces);
 
         if (cDataContent == null) {
@@ -617,7 +579,6 @@ public final class SimpleMessageContext {
      * @return CData content as a String
      */
     private String getCDataContent(String xPath, XmlNamespace... namespaces) {
-
         List<OMElement> results = getXmlElements(xPath, namespaces);
 
         if (results.isEmpty()) {
@@ -636,7 +597,6 @@ public final class SimpleMessageContext {
      * @return Payload String
      */
     public String getTextPayload() {
-
         return getTextPayload(messageContext.getEnvelope());
     }
 
@@ -646,7 +606,6 @@ public final class SimpleMessageContext {
      * @param text String to set as the current payload
      */
     public void setTextPayload(String text) {
-
         setPayloadType("text/plain");
 
         if (messageContext.getEnvelope() == null) {
@@ -667,7 +626,6 @@ public final class SimpleMessageContext {
      * @return Payload text
      */
     private String getTextPayload(SOAPEnvelope envelope) {
-
         OMElement el = getXMLPayload(envelope);
         if (el == null) {
             return "";
@@ -686,7 +644,6 @@ public final class SimpleMessageContext {
      * @return text value of the node
      */
     private String getTextValue(OMNode node) {
-
         switch (node.getType()) {
             case OMNode.ELEMENT_NODE:
                 StringBuilder sb = new StringBuilder();
@@ -709,7 +666,6 @@ public final class SimpleMessageContext {
      * @return String[] representation of the CSV payload
      */
     public List<String[]> getCsvPayload() {
-
         return getCsvPayload(0);
     }
 
@@ -719,7 +675,6 @@ public final class SimpleMessageContext {
      * @param data List of String array representing rows of CSV
      */
     public void setCsvPayload(List<String[]> data) {
-
         StringWriter stringWriter = new StringWriter();
         CSVWriter csvWriter = new CSVWriter(stringWriter,
                 CSVWriter.DEFAULT_SEPARATOR,
@@ -745,7 +700,6 @@ public final class SimpleMessageContext {
      * @return String[] representation of the CSV payload
      */
     public List<String[]> getCsvPayload(int linesToSkip) {
-
         String payloadText = getTextPayload();
 
         String csvText;
@@ -772,7 +726,6 @@ public final class SimpleMessageContext {
      * @return Stream of Array of String representing each line of the CSV payload
      */
     public Stream<String[]> getCsvArrayStream() {
-
         return getCsvArrayStream(0);
     }
 
@@ -784,7 +737,6 @@ public final class SimpleMessageContext {
      * @return Stream of Array of String representing each line of the CSV payload
      */
     public Stream<String[]> getCsvArrayStream(int linesToSkip) {
-
         List<String[]> rows = getCsvPayload(linesToSkip);
         return rows.stream();
     }
@@ -795,7 +747,6 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedElement of String[]
      */
     public Stream<IndexedElement<String[]>> getCsvArrayStreamWithIndex() {
-
         return getCsvArrayStreamWithIndex(0);
     }
 
@@ -806,7 +757,6 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedElement of String[]
      */
     public Stream<IndexedElement<String[]>> getCsvArrayStreamWithIndex(int linesToSkip) {
-
         List<String[]> rows = getCsvPayload(linesToSkip);
         return IntStream.range(0, rows.size())
                 .mapToObj(i -> new IndexedElement<>(i, rows.get(i)));
@@ -819,7 +769,6 @@ public final class SimpleMessageContext {
      * @return value for the given key
      */
     public Object getProperty(String key) {
-
         return messageContext.getProperty(key);
     }
 
@@ -830,7 +779,6 @@ public final class SimpleMessageContext {
      * @param value value to be saved
      */
     public void setProperty(String key, Object value) {
-
         messageContext.setProperty(key, value);
     }
 
@@ -841,7 +789,6 @@ public final class SimpleMessageContext {
      * @param value header value
      */
     public void setHeader(String key, String value) {
-
         org.apache.axis2.context.MessageContext axis2MessageContext =
                 ((Axis2MessageContext) messageContext).getAxis2MessageContext();
         Object headerObj = axis2MessageContext.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
@@ -860,7 +807,6 @@ public final class SimpleMessageContext {
      * @return instance of JsonArrayCollector
      */
     public JsonArrayCollector collectToJsonArray(String objectKey) {
-
         return new JsonArrayCollector(this, objectKey);
     }
 
@@ -870,7 +816,6 @@ public final class SimpleMessageContext {
      * @return instance of JsonArrayCollector
      */
     public JsonArrayCollector collectToJsonArray() {
-
         return new JsonArrayCollector(this, null);
     }
 
@@ -880,7 +825,6 @@ public final class SimpleMessageContext {
      * @return instance of JsonObjectCollector
      */
     public JsonObjectCollector collectToJsonObject() {
-
         return new JsonObjectCollector(this);
     }
 
@@ -890,7 +834,6 @@ public final class SimpleMessageContext {
      * @return instance of CsvCollector
      */
     public CsvCollector collectToCsv() {
-
         return new CsvCollector(this, null);
     }
 
@@ -901,7 +844,6 @@ public final class SimpleMessageContext {
      * @return instance of CsvCollector
      */
     public CsvCollector collectToCsv(String[] header) {
-
         return new CsvCollector(this, header);
     }
 
@@ -911,7 +853,6 @@ public final class SimpleMessageContext {
      * @param payloadType payload type to set
      */
     private void setPayloadType(String payloadType) {
-
         org.apache.axis2.context.MessageContext axis2MessageContext =
                 ((Axis2MessageContext) messageContext).getAxis2MessageContext();
         axis2MessageContext.setProperty(Constants.Configuration.MESSAGE_TYPE, payloadType);
@@ -925,7 +866,6 @@ public final class SimpleMessageContext {
      * @return parameter content
      */
     public Object lookupTemplateParameter(String paramName) {
-
         return ConnectorUtils.lookupTemplateParamater(messageContext, paramName);
     }
 
@@ -936,7 +876,6 @@ public final class SimpleMessageContext {
      * @return parameter content
      */
     public Object lookupTemplateParameter(int index) {
-
         return ConnectorUtils.lookupTemplateParamater(messageContext, index);
 
     }
@@ -947,7 +886,6 @@ public final class SimpleMessageContext {
      * @return current MessageContext
      */
     MessageContext getMessageContext() {
-
         return messageContext;
     }
 

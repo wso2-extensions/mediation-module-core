@@ -47,19 +47,16 @@ public class JsonObjectCollector implements Collector<Map.Entry<String, JsonElem
 
     @Override
     public Supplier<JsonObject> supplier() {
-
         return JsonObject::new;
     }
 
     @Override
     public BiConsumer<JsonObject, Map.Entry<String, JsonElement>> accumulator() {
-
         return (jsonObject, jsonElementEntry) -> jsonObject.add(jsonElementEntry.getKey(), jsonElementEntry.getValue());
     }
 
     @Override
     public BinaryOperator<JsonObject> combiner() {
-
         return (jsonObject, jsonObject2) -> {
             jsonObject2.entrySet().forEach(
                     jsonElementEntry -> jsonObject.add(jsonElementEntry.getKey(), jsonElementEntry.getValue()));
@@ -70,7 +67,6 @@ public class JsonObjectCollector implements Collector<Map.Entry<String, JsonElem
 
     @Override
     public Function<JsonObject, Boolean> finisher() {
-
         return result -> {
             simpleMessageContext.setJsonPayload(result);
             return true;
@@ -79,7 +75,6 @@ public class JsonObjectCollector implements Collector<Map.Entry<String, JsonElem
 
     @Override
     public Set<Characteristics> characteristics() {
-
         return Sets.immutableEnumSet(UNORDERED);
     }
 }

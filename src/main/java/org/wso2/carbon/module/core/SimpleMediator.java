@@ -31,13 +31,11 @@ import org.apache.synapse.mediators.AbstractMediator;
 public abstract class SimpleMediator extends AbstractMediator {
 
     protected SimpleMediator() {
-
         super();
     }
 
     @Override
     public final boolean mediate(MessageContext messageContext) {
-
         try {
             mediate(new SimpleMessageContext(messageContext));
             return true;
@@ -67,7 +65,6 @@ public abstract class SimpleMediator extends AbstractMediator {
      * @return MediatorLog instance - an implementation of the SynapseLog
      */
     protected SynapseLog getLog(SimpleMessageContext simpleMessageContext) {
-
         return super.getLog(simpleMessageContext.getMessageContext());
     }
 
