@@ -42,6 +42,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
 
     private final SimpleMessageContext simpleMessageContext;
     private final String[] header;
+    private final char separator;
 
     /**
      * Create new instance with Message context and header
@@ -52,6 +53,20 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
     public CsvCollector(SimpleMessageContext simpleMessageContext, String[] header) {
         this.simpleMessageContext = simpleMessageContext;
         this.header = header;
+        this.separator = CSVWriter.DEFAULT_SEPARATOR;
+    }
+
+    /**
+     * Create new instance with Message context and header
+     *
+     * @param simpleMessageContext SimpleMessageContext to use
+     * @param header               Headers to append to the top of the csv. If this is null, then no headers would be added
+     * @param separator            Separator to be used in the CSV content
+     */
+    public CsvCollector(SimpleMessageContext simpleMessageContext, String[] header, char separator) {
+        this.simpleMessageContext = simpleMessageContext;
+        this.header = header;
+        this.separator = separator;
     }
 
     @Override
@@ -77,7 +92,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
         return rowList -> {
             StringWriter stringWriter = new StringWriter();
             CSVWriter csvWriter = new CSVWriter(stringWriter,
-                    CSVWriter.DEFAULT_SEPARATOR,
+                    separator,
                     CSVWriter.NO_QUOTE_CHARACTER,
                     CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                     CSVWriter.DEFAULT_LINE_END);

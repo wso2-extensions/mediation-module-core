@@ -21,18 +21,9 @@ package org.wso2.carbon.module.core;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.Iterators;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.jayway.jsonpath.PathNotFoundException;
-import org.apache.axiom.om.OMAbstractFactory;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMNode;
-import org.apache.axiom.om.OMText;
-import org.apache.axiom.om.OMXMLBuilderFactory;
+import org.apache.axiom.om.*;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.axiom.soap.SOAPEnvelope;
 import org.apache.axis2.AxisFault;
@@ -661,23 +652,15 @@ public final class SimpleMessageContext {
     }
 
     /**
-     * Return String[] representation for CSV payload
-     *
-     * @return String[] representation of the CSV payload
-     */
-    public List<String[]> getCsvPayload() {
-        return getCsvPayload(0);
-    }
-
-    /**
      * Set given payload as CSV
      *
-     * @param data List of String array representing rows of CSV
+     * @param separator Separator to use for csv payload
+     * @param data      List of String array representing rows of CSV
      */
-    public void setCsvPayload(List<String[]> data) {
+    public void setCsvPayload(List<String[]> data, char separator) {
         StringWriter stringWriter = new StringWriter();
         CSVWriter csvWriter = new CSVWriter(stringWriter,
-                CSVWriter.DEFAULT_SEPARATOR,
+                separator,
                 CSVWriter.NO_QUOTE_CHARACTER,
                 CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                 CSVWriter.DEFAULT_LINE_END);
@@ -696,10 +679,39 @@ public final class SimpleMessageContext {
     /**
      * Return String[] representation for CSV payload
      *
+     * @return String[] representation of the CSV payload
+     */
+    public List<String[]> getCsvPayload() {
+        return getCsvPayload(0);
+    }
+
+    /**
+     * Set given payload as CSV
+     *
+     * @param data List of String array representing rows of CSV
+     */
+    public void setCsvPayload(List<String[]> data) {
+        setCsvPayload(data, CSVWriter.DEFAULT_SEPARATOR);
+    }
+
+    /**
+     * Return String[] representation for CSV payload
+     *
      * @param linesToSkip Number of lines to skip from header of CSV
      * @return String[] representation of the CSV payload
      */
     public List<String[]> getCsvPayload(int linesToSkip) {
+        return getCsvPayload(linesToSkip, CSVReader.DEFAULT_SEPARATOR);
+    }
+
+    /**
+     * Returns String[] representation for CSV payload
+     *
+     * @param linesToSkip Number of lines to skip from the header of the CSV
+     * @param separator   Separator to use in the CSV
+     * @return String[] representation of the CSV payload
+     */
+    public List<String[]> getCsvPayload(int linesToSkip, char separator) {
         String payloadText = getTextPayload();
 
         String csvText;
@@ -710,7 +722,7 @@ public final class SimpleMessageContext {
             csvText = "";
         }
         CSVReader csvReader =
-                new CSVReader(new StringReader(csvText), CSVReader.DEFAULT_SEPARATOR, CSVReader.DEFAULT_QUOTE_CHARACTER,
+                new CSVReader(new StringReader(csvText), separator, CSVReader.DEFAULT_QUOTE_CHARACTER,
                         linesToSkip);
         try {
             return csvReader.readAll();
@@ -737,9 +749,22 @@ public final class SimpleMessageContext {
      * @return Stream of Array of String representing each line of the CSV payload
      */
     public Stream<String[]> getCsvArrayStream(int linesToSkip) {
-        List<String[]> rows = getCsvPayload(linesToSkip);
+        return getCsvArrayStream(linesToSkip, CSVReader.DEFAULT_SEPARATOR);
+    }
+
+    /**
+     * If the payload is a CSV, returns the payload as a Stream of Array of String for each line in CSV content.
+     * If payload is not a valid CSV then, returns an empty Stream
+     *
+     * @param linesToSkip Number of lines to skip from header of CSV
+     * @param separator   Separator to use in the CSV
+     * @return Stream of Array of String representing each line of the CSV payload
+     */
+    public Stream<String[]> getCsvArrayStream(int linesToSkip, char separator) {
+        List<String[]> rows = getCsvPayload(linesToSkip, separator);
         return rows.stream();
     }
+
 
     /**
      * If the payload is a CSV, returns the payload as a Stream of IndexedElement of String[] for lines in CSV content.
@@ -757,7 +782,18 @@ public final class SimpleMessageContext {
      * @return Stream of IndexedElement of String[]
      */
     public Stream<IndexedElement<String[]>> getCsvArrayStreamWithIndex(int linesToSkip) {
-        List<String[]> rows = getCsvPayload(linesToSkip);
+        return getCsvArrayStreamWithIndex(linesToSkip, CSVReader.DEFAULT_SEPARATOR);
+    }
+
+    /**
+     * If the payload is a CSV, returns the payload as a Stream of IndexedElement of String[] for lines in CSV content.
+     *
+     * @param linesToSkip Number of lines to skip from header of CSV
+     * @param separator   Separator of the CSV payload
+     * @return Stream of IndexedElement of String[]
+     */
+    public Stream<IndexedElement<String[]>> getCsvArrayStreamWithIndex(int linesToSkip, char separator) {
+        List<String[]> rows = getCsvPayload(linesToSkip, separator);
         return IntStream.range(0, rows.size())
                 .mapToObj(i -> new IndexedElement<>(i, rows.get(i)));
     }
@@ -846,6 +882,18 @@ public final class SimpleMessageContext {
     public CsvCollector collectToCsv(String[] header) {
         return new CsvCollector(this, header);
     }
+
+    /**
+     * Returns an instance of CsvCollector to collect and set payload as CSV for String[] Stream
+     *
+     * @param header    Header to set for CSV
+     * @param separator Separator to use in the CSV payload
+     * @return instance of CsvCollector
+     */
+    public CsvCollector collectToCsv(String[] header, char separator) {
+        return new CsvCollector(this, header, separator);
+    }
+
 
     /**
      * Set payload type to given type
