@@ -41,6 +41,7 @@ import org.wso2.carbon.module.core.collectors.CsvCollector;
 import org.wso2.carbon.module.core.collectors.JsonArrayCollector;
 import org.wso2.carbon.module.core.collectors.JsonObjectCollector;
 import org.wso2.carbon.module.core.exceptions.SimpleMessageContextException;
+import org.wso2.carbon.module.core.models.CsvPayloadInfo;
 import org.wso2.carbon.module.core.models.IndexedElement;
 import org.wso2.carbon.module.core.models.IndexedEntry;
 import org.wso2.carbon.module.core.models.XmlNamespace;
@@ -730,6 +731,28 @@ public final class SimpleMessageContext {
             throw new SimpleMessageContextException("Error reading csv payload", e);
         }
     }
+
+    /**
+     * Returns information about the CSV payload
+     *
+     * @param separator Character separator for CSV
+     * @return CsvPayloadInfo for the current payload
+     */
+    public CsvPayloadInfo getCsvPayloadInfo(char separator) {
+        List<String[]> csvPayload = getCsvPayload(0, separator);
+        CsvPayloadInfo payloadInfo;
+
+        if (!csvPayload.isEmpty()) {
+            String[] firstRow = csvPayload.get(0);
+            int numberOfColumns = firstRow.length;
+            payloadInfo = new CsvPayloadInfo(firstRow, numberOfColumns, csvPayload);
+        } else {
+            payloadInfo = new CsvPayloadInfo(new String[]{}, 0, Collections.emptyList());
+        }
+
+        return payloadInfo;
+    }
+
 
     /**
      * If the payload is a CSV, returns the payload as a Stream of Array of String for each line in CSV content.

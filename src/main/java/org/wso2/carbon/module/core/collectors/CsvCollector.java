@@ -97,7 +97,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
                     CSVWriter.DEFAULT_ESCAPE_CHARACTER,
                     CSVWriter.DEFAULT_LINE_END);
 
-            if (header != null) {
+            if (header != null && header.length != 0) {
                 rowList.add(0, header);
             }
 
