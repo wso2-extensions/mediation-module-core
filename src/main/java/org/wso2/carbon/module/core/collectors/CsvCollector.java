@@ -51,6 +51,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
      * @param header               Headers to append to the top of the csv. If this is null, then no headers would be added
      */
     public CsvCollector(SimpleMessageContext simpleMessageContext, String[] header) {
+
         this.simpleMessageContext = simpleMessageContext;
         this.header = header;
         this.separator = CSVWriter.DEFAULT_SEPARATOR;
@@ -64,6 +65,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
      * @param separator            Separator to be used in the CSV content
      */
     public CsvCollector(SimpleMessageContext simpleMessageContext, String[] header, char separator) {
+
         this.simpleMessageContext = simpleMessageContext;
         this.header = header;
         this.separator = separator;
@@ -71,16 +73,19 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
 
     @Override
     public Supplier<List<String[]>> supplier() {
+
         return ArrayList::new;
     }
 
     @Override
     public BiConsumer<List<String[]>, String[]> accumulator() {
+
         return List::add;
     }
 
     @Override
     public BinaryOperator<List<String[]>> combiner() {
+
         return (list1, list2) -> {
             list1.addAll(list2);
             return list1;
@@ -89,6 +94,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
 
     @Override
     public Function<List<String[]>, Boolean> finisher() {
+
         return rowList -> {
             StringWriter stringWriter = new StringWriter();
             CSVWriter csvWriter = new CSVWriter(stringWriter,
@@ -118,6 +124,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
 
     @Override
     public Set<Characteristics> characteristics() {
+
         return Sets.immutableEnumSet(UNORDERED);
     }
 }

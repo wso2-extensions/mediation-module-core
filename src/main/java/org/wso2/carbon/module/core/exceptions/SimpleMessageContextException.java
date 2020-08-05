@@ -26,14 +26,17 @@ package org.wso2.carbon.module.core.exceptions;
 public class SimpleMessageContextException extends RuntimeException {
 
     public SimpleMessageContextException(Throwable cause) {
+
         super(cause);
     }
 
     public SimpleMessageContextException(String message) {
+
         super(message);
     }
 
     public SimpleMessageContextException(String message, Throwable cause) {
+
         super(message, cause);
     }
 }
