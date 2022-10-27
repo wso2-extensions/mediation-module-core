@@ -772,7 +772,7 @@ public final class SimpleMessageContext {
 
         String csvText;
         if (payloadText != null) {
-            csvText = payloadText;
+            csvText = StringEscapeUtils.unescapeXml(payloadText);
         } else {
             log.error("Error converting data : not a valid CSV payload");
             csvText = "";
