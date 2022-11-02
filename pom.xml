@@ -24,7 +24,7 @@
 
     <groupId>org.wso2.carbon.module</groupId>
     <artifactId>module-core</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.1-SNAPSHOT</version>
 
     <scm>
         <connection>scm:git:https://github.com/wso2-extensions/mediation-module-core.git</connection>
