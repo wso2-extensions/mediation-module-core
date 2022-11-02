@@ -32,6 +32,19 @@
         <url>https://github.com/wso2-extensions/mediation-module-core.git</url>
         <tag>HEAD</tag>
     </scm>
+    
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>WSO2 Release Distribution Repository</name>
+            <url>http://maven.wso2.org/nexus/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>wso2.snapshots</id>
+            <name>Apache Snapshot Repository</name>
+            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <properties>
         <synapse-core.version>2.1.7-wso2v164</synapse-core.version>
