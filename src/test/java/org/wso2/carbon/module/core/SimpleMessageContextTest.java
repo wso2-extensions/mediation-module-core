@@ -208,7 +208,7 @@ public class SimpleMessageContextTest {
     @Test
     public void testGetCsvArrayStream_validCsvPayload_returnsCorrectStream() {
 
-        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD);
+        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD_TO_TEST_CSV_READER);
 
         Stream<String[]> actual = simpleMessageContext.getCsvArrayStream();
 
@@ -229,7 +229,7 @@ public class SimpleMessageContextTest {
     @Test
     public void testGetCsvArrayStreamWithLinesToSkip_validParams_returnsCorrectStream() {
 
-        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD);
+        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD_TO_TEST_CSV_READER);
 
         Stream<String[]> actual = simpleMessageContext.getCsvArrayStream(1);
 
@@ -250,7 +250,7 @@ public class SimpleMessageContextTest {
     @Test
     public void testGetCsvArrayStreamWithIndex_validCsv_returnsCorrectStream() {
 
-        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD);
+        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD_TO_TEST_CSV_READER);
 
         Stream<IndexedElement<String[]>> actual = simpleMessageContext.getCsvArrayStreamWithIndex();
         List<IndexedElement<String[]>> actualList = actual.collect(Collectors.toList());
@@ -276,7 +276,7 @@ public class SimpleMessageContextTest {
     @Test
     public void testGetCsvArrayStreamWithIndexWithLinesToSkip_validCsv_returnsCorrectStream() {
 
-        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD);
+        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD_TO_TEST_CSV_READER);
         final int numberOfLinesToSkip = 1;
 
         Stream<IndexedElement<String[]>> actual = simpleMessageContext.getCsvArrayStreamWithIndex(numberOfLinesToSkip);
@@ -305,7 +305,7 @@ public class SimpleMessageContextTest {
     @Test
     public void testGetCsvPayload_validCsv_returnCorrectPayload() {
 
-        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD);
+        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD_TO_TEST_CSV_READER);
 
         List<String[]> actual = simpleMessageContext.getCsvPayload();
 
@@ -328,7 +328,7 @@ public class SimpleMessageContextTest {
     @Test
     public void testGetCsvPayloadLinesToSkip_validCsv_returnCorrectPayload() {
 
-        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD);
+        mockSoapEnvelop(TestConstants.SOAP_CSV_PAYLOAD_TO_TEST_CSV_READER);
         final int numberOfLinesToSkip = 1;
 
         List<String[]> actual = simpleMessageContext.getCsvPayload(numberOfLinesToSkip);

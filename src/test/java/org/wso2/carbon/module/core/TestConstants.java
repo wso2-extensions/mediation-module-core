@@ -29,13 +29,22 @@ public final class TestConstants {
                     "4,Kissiah Douglass,kdouglass3@squarespace.com,903-543-9223\n" +
                     "5,Robinette Udey,rudey4@nytimes.com,140-672-9856</text></soapenv:Body></soapenv:Envelope>";
 
+    public static final String SOAP_CSV_PAYLOAD_TO_TEST_CSV_READER =
+            "<?xml version='1.0' encoding='utf-8'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><text xmlns=\"http://ws.apache.org/commons/ns/payload\">" +
+                    "id,name,email,phone_number\n" +
+                    "1,De witt Hambidge,dwitt0@newsvine.com,723-376-0325\n" +
+                    "2,\"Brody, Dowthwaite\",bdowthwaite1@delicious.com,557-258-6813\n" +
+                    "3,\"Catlin Drought\",cdrought2@etsy.com,608-510-7991\n" +
+                    "4,Kissiah Douglass,kdouglass3@squarespace.com,903-543-9223\n" +
+                    "5,Robinette Udey,rudey4@nytimes.com,140-672-9856</text></soapenv:Body></soapenv:Envelope>";
+
     public static final String SOAP_CSV_INVALID_PAYLOAD =
             "<?xml version='1.0' encoding='utf-8'?><soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\"><soapenv:Body><hello></hello></soapenv:Body></soapenv:Envelope>";
 
     public static final String[][] SOAP_CSV_VALUES =
             new String[][]{new String[]{"id", "name", "email", "phone_number"},
                     new String[]{"1", "De witt Hambidge", "dwitt0@newsvine.com", "723-376-0325"},
-                    new String[]{"2", "Brody Dowthwaite", "bdowthwaite1@delicious.com", "557-258-6813"},
+                    new String[]{"2", "Brody, Dowthwaite", "bdowthwaite1@delicious.com", "557-258-6813"},
                     new String[]{"3", "Catlin Drought", "cdrought2@etsy.com", "608-510-7991"},
                     new String[]{"4", "Kissiah Douglass", "kdouglass3@squarespace.com", "903-543-9223"},
                     new String[]{"5", "Robinette Udey", "rudey4@nytimes.com", "140-672-9856"}};
