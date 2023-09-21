@@ -986,6 +986,32 @@ public final class SimpleMessageContext {
         return new CsvCollector(this, header, separator);
     }
 
+
+    /**
+     * Returns an instance of CsvCollector to collect and set payload as CSV for String[] Stream
+     *
+     * @param header              Header to set for CSV
+     * @param suppressEscapeChar  Whether escape Characters will be suppressed in the output CSV
+     * @return instance of CsvCollector
+     */
+    public CsvCollector collectToCsv(String[] header, boolean suppressEscapeChar) {
+
+        return new CsvCollector(this, header, CSVWriter.DEFAULT_SEPARATOR, suppressEscapeChar);
+    }
+
+    /**
+     * Returns an instance of CsvCollector to collect and set payload as CSV for String[] Stream
+     *
+     * @param header    Header to set for CSV
+     * @param separator Separator to use in the CSV payload
+     * @param suppressEscapeChar  Whether escape Characters will be suppressed in the output CSV
+     * @return instance of CsvCollector
+     */
+    public CsvCollector collectToCsv(String[] header, char separator, boolean suppressEscapeChar) {
+
+        return new CsvCollector(this, header, separator, suppressEscapeChar);
+    }
+
     /**
      * Set payload type to given type
      *

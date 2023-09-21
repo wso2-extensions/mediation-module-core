@@ -43,6 +43,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
     private final SimpleMessageContext simpleMessageContext;
     private final String[] header;
     private final char separator;
+    private final char escapeCharacter;
 
     /**
      * Create new instance with Message context and header
@@ -55,6 +56,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
         this.simpleMessageContext = simpleMessageContext;
         this.header = header;
         this.separator = CSVWriter.DEFAULT_SEPARATOR;
+        this.escapeCharacter = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
     }
 
     /**
@@ -69,6 +71,27 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
         this.simpleMessageContext = simpleMessageContext;
         this.header = header;
         this.separator = separator;
+        this.escapeCharacter = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
+    }
+
+    /**
+     * Create new instance with Message context and header
+     *
+     * @param simpleMessageContext SimpleMessageContext to use
+     * @param header               Headers to append to the top of the csv. If this is null, then no headers would be added
+     * @param separator            Separator to be used in the CSV content
+     */
+    public CsvCollector(SimpleMessageContext simpleMessageContext, String[] header, char separator,
+                        boolean suppressEscapeCharacter) {
+
+        this.simpleMessageContext = simpleMessageContext;
+        this.header = header;
+        this.separator = separator;
+        if (suppressEscapeCharacter) {
+            this.escapeCharacter = CSVWriter.NO_ESCAPE_CHARACTER;
+        } else {
+            this.escapeCharacter = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
+        }
     }
 
     @Override
@@ -100,7 +123,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
             CSVWriter csvWriter = new CSVWriter(stringWriter,
                     separator,
                     CSVWriter.NO_QUOTE_CHARACTER,
-                    CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                    escapeCharacter,
                     CSVWriter.DEFAULT_LINE_END);
 
             if (header != null && header.length != 0) {
