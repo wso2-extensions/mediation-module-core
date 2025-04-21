@@ -1002,6 +1002,19 @@ public final class SimpleMessageContext {
     /**
      * Returns an instance of CsvCollector to collect and set payload as CSV for String[] Stream
      *
+     * @param header             Header to set for CSV
+     * @param suppressEscapeChar Whether escape Characters will be suppressed in the output CSV
+     * @param applyQuotes        Whether to apply quotes for the Fields with line breaks, commas, or double quotes
+     * @return instance of CsvCollector
+     */
+    public CsvCollector collectToCsv(String[] header, boolean suppressEscapeChar, boolean applyQuotes) {
+
+        return new CsvCollector(this, header, CSVWriter.DEFAULT_SEPARATOR, suppressEscapeChar, applyQuotes);
+    }
+
+    /**
+     * Returns an instance of CsvCollector to collect and set payload as CSV for String[] Stream
+     *
      * @param header    Header to set for CSV
      * @param separator Separator to use in the CSV payload
      * @param suppressEscapeChar  Whether escape Characters will be suppressed in the output CSV
@@ -1010,6 +1023,20 @@ public final class SimpleMessageContext {
     public CsvCollector collectToCsv(String[] header, char separator, boolean suppressEscapeChar) {
 
         return new CsvCollector(this, header, separator, suppressEscapeChar);
+    }
+
+    /**
+     * Returns an instance of CsvCollector to collect and set payload as CSV for String[] Stream
+     *
+     * @param header             Header to set for CSV
+     * @param separator          Separator to use in the CSV payload
+     * @param suppressEscapeChar Whether escape Characters will be suppressed in the output CSV
+     * @param applyQuotes        Whether to apply quotes for the Fields with line breaks, commas, or double quotes
+     * @return instance of CsvCollector
+     */
+    public CsvCollector collectToCsv(String[] header, char separator, boolean suppressEscapeChar, boolean applyQuotes) {
+
+        return new CsvCollector(this, header, separator, suppressEscapeChar, applyQuotes);
     }
 
     /**

@@ -21,6 +21,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.Sets;
 import org.wso2.carbon.module.core.SimpleMessageContext;
 import org.wso2.carbon.module.core.exceptions.SimpleMessageContextException;
+import org.wso2.carbon.module.core.writers.CSVWriterWithQuote;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -44,6 +45,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
     private final String[] header;
     private final char separator;
     private final char escapeCharacter;
+    private final boolean applyQuotes;
 
     /**
      * Create new instance with Message context and header
@@ -57,6 +59,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
         this.header = header;
         this.separator = CSVWriter.DEFAULT_SEPARATOR;
         this.escapeCharacter = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
+        this.applyQuotes = false;
     }
 
     /**
@@ -72,6 +75,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
         this.header = header;
         this.separator = separator;
         this.escapeCharacter = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
+        this.applyQuotes = false;
     }
 
     /**
@@ -87,6 +91,29 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
         this.simpleMessageContext = simpleMessageContext;
         this.header = header;
         this.separator = separator;
+        if (suppressEscapeCharacter) {
+            this.escapeCharacter = CSVWriter.NO_ESCAPE_CHARACTER;
+        } else {
+            this.escapeCharacter = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
+        }
+        this.applyQuotes = false;
+    }
+
+    /**
+     * Create new instance with Message context and header
+     *
+     * @param simpleMessageContext SimpleMessageContext to use
+     * @param header               Headers to append to the top of the csv. If this is null, then no headers would be added
+     * @param separator            Separator to be used in the CSV content
+     * @param applyQuotes          Whether to apply quotes for the Fields with line breaks, commas, or double quotes
+     */
+    public CsvCollector(SimpleMessageContext simpleMessageContext, String[] header, char separator,
+                        boolean suppressEscapeCharacter, boolean applyQuotes) {
+
+        this.simpleMessageContext = simpleMessageContext;
+        this.header = header;
+        this.separator = separator;
+        this.applyQuotes = applyQuotes;
         if (suppressEscapeCharacter) {
             this.escapeCharacter = CSVWriter.NO_ESCAPE_CHARACTER;
         } else {
@@ -120,16 +147,17 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
 
         return rowList -> {
             StringWriter stringWriter = new StringWriter();
-            CSVWriter csvWriter = new CSVWriter(stringWriter,
-                    separator,
-                    CSVWriter.NO_QUOTE_CHARACTER,
-                    escapeCharacter,
-                    CSVWriter.DEFAULT_LINE_END);
 
             if (header != null && header.length != 0) {
                 rowList.add(0, header);
             }
 
+            CSVWriter csvWriter;
+            if (applyQuotes) {
+                csvWriter = new CSVWriterWithQuote(stringWriter, separator, CSVWriter.DEFAULT_QUOTE_CHARACTER, escapeCharacter, CSVWriter.DEFAULT_LINE_END);
+            } else {
+                csvWriter = new CSVWriter(stringWriter, separator, CSVWriter.NO_QUOTE_CHARACTER, escapeCharacter, CSVWriter.DEFAULT_LINE_END);
+            }
             csvWriter.writeAll(rowList);
             try {
                 csvWriter.close();
