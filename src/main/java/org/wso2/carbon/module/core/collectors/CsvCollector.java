@@ -17,8 +17,8 @@
  */
 package org.wso2.carbon.module.core.collectors;
 
-import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.Sets;
+import com.opencsv.CSVWriter;
 import org.wso2.carbon.module.core.SimpleMessageContext;
 import org.wso2.carbon.module.core.exceptions.SimpleMessageContextException;
 
@@ -44,6 +44,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
     private final String[] header;
     private final char separator;
     private final char escapeCharacter;
+    private final char quoteChar;
 
     /**
      * Create new instance with Message context and header
@@ -57,6 +58,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
         this.header = header;
         this.separator = CSVWriter.DEFAULT_SEPARATOR;
         this.escapeCharacter = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
+        this.quoteChar = CSVWriter.DEFAULT_QUOTE_CHARACTER;
     }
 
     /**
@@ -72,6 +74,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
         this.header = header;
         this.separator = separator;
         this.escapeCharacter = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
+        this.quoteChar = CSVWriter.DEFAULT_QUOTE_CHARACTER;
     }
 
     /**
@@ -89,8 +92,10 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
         this.separator = separator;
         if (suppressEscapeCharacter) {
             this.escapeCharacter = CSVWriter.NO_ESCAPE_CHARACTER;
+            this.quoteChar = CSVWriter.NO_QUOTE_CHARACTER;
         } else {
             this.escapeCharacter = CSVWriter.DEFAULT_ESCAPE_CHARACTER;
+            this.quoteChar = CSVWriter.DEFAULT_QUOTE_CHARACTER;
         }
     }
 
@@ -122,7 +127,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
             StringWriter stringWriter = new StringWriter();
             CSVWriter csvWriter = new CSVWriter(stringWriter,
                     separator,
-                    CSVWriter.NO_QUOTE_CHARACTER,
+                    quoteChar,
                     escapeCharacter,
                     CSVWriter.DEFAULT_LINE_END);
 
@@ -130,7 +135,7 @@ public class CsvCollector implements Collector<String[], List<String[]>, Boolean
                 rowList.add(0, header);
             }
 
-            csvWriter.writeAll(rowList);
+            csvWriter.writeAll(rowList, false);
             try {
                 csvWriter.close();
                 stringWriter.flush();

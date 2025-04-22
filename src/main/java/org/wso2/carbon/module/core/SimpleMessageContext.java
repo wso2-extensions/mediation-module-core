@@ -18,8 +18,6 @@
 
 package org.wso2.carbon.module.core;
 
-import au.com.bytecode.opencsv.CSVReader;
-import au.com.bytecode.opencsv.CSVWriter;
 import com.google.common.collect.Iterators;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -28,6 +26,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.jayway.jsonpath.PathNotFoundException;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.CSVWriter;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMNode;
@@ -756,7 +759,7 @@ public final class SimpleMessageContext {
      */
     public List<String[]> getCsvPayload(int linesToSkip) {
 
-        return getCsvPayload(linesToSkip, CSVReader.DEFAULT_SEPARATOR);
+        return getCsvPayload(linesToSkip, CSVWriter.DEFAULT_SEPARATOR);
     }
 
     /**
@@ -777,10 +780,16 @@ public final class SimpleMessageContext {
             log.error("Error converting data : not a valid CSV payload");
             csvText = "";
         }
-        CSVReader csvReader =
-                new CSVReader(new StringReader(csvText), separator, CSVReader.DEFAULT_QUOTE_CHARACTER,
-                        linesToSkip);
-        try {
+        CSVReaderBuilder csvReaderBuilder =
+                new CSVReaderBuilder(new StringReader(csvText));
+        CSVParserBuilder csvParserBuilder =
+                new CSVParserBuilder();
+        CSVParser csvParser = csvParserBuilder.withSeparator(separator).build();
+
+        try (CSVReader csvReader = csvReaderBuilder.withCSVParser(csvParser)
+                .withSkipLines(linesToSkip)
+                .withCSVParser(csvParser)
+                .build()){
             return csvReader.readAll();
         } catch (Exception e) {
             throw new SimpleMessageContextException("Error reading csv payload", e);
@@ -829,7 +838,7 @@ public final class SimpleMessageContext {
      */
     public Stream<String[]> getCsvArrayStream(int linesToSkip) {
 
-        return getCsvArrayStream(linesToSkip, CSVReader.DEFAULT_SEPARATOR);
+        return getCsvArrayStream(linesToSkip, CSVWriter.DEFAULT_SEPARATOR);
     }
 
     /**
@@ -864,7 +873,7 @@ public final class SimpleMessageContext {
      */
     public Stream<IndexedElement<String[]>> getCsvArrayStreamWithIndex(int linesToSkip) {
 
-        return getCsvArrayStreamWithIndex(linesToSkip, CSVReader.DEFAULT_SEPARATOR);
+        return getCsvArrayStreamWithIndex(linesToSkip, CSVWriter.DEFAULT_SEPARATOR);
     }
 
     /**
